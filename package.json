@@ -1,0 +1,23 @@
+{
+  "name": "dsc106_hw2",
+  "version": "0.0.1",
+  "author": "Eric Jiang",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/e5jiang/mcdonalds-viz"
+  },
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "3.x",
+    "express3-handlebars": "*",
+    "mongodb": "*",
+    "mongoose": "*"
+  },
+  "engines": {
+    "node": "8.9.x"
+  }
+}

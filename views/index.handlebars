@@ -1,0 +1,42 @@
+<html>
+<style>
+    table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    }
+
+    td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    }
+
+    tr:nth-child(even) {
+    background-color: #dddddd;
+    }
+</style>
+
+    <body>
+        
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="assets/highcharts.js"></script>
+        <script src="assets/data.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="http://highcharts.base.is/highcharts-downsample.js"></script>
+       
+        <div style="width: 100%; overflow: hidden;"> 
+            <div id='container' style="width: 65%; float:left; padding-right: 5%"></div>
+            
+            <div id='pie_legend' style="width: 30%; float:left">
+                <table id="legend">
+                    <tr>
+                        <th>Sources</th>
+                        <th>Power</th>
+                    </tr>
+                </table>    
+            </div>
+        </div>
+        <script src="js/main.js"></script>
+    </body>
+</html>
