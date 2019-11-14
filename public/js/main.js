@@ -1,38 +1,3 @@
-/*
-The purpose of this demo is to demonstrate how multiple charts on the same page
-can be linked through DOM and Highcharts events and API methods. It takes a
-standard Highcharts config with a small variation for each data set, and a
-mouse/touch event handler to bind the charts together.
-*/
-
-
-/**
- * In order to synchronize tooltips and crosshairs, override the
- * built-in events with handlers defined on the parent element.
- */
-/*['mousemove', 'touchmove', 'touchstart'].forEach(function (eventType) {
-    document.getElementById('container').addEventListener(
-        eventType,
-        function (e) {
-            var chart,
-                point,
-                i,
-                event;
-
-            for (i = 0; i < Highcharts.charts.length; i = i + 1) {
-                chart = Highcharts.charts[i];
-                // Find coordinates within the chart
-                event = chart.pointer.normalize(e);
-                // Get the hovered point
-                point = chart.series[0].searchPoint(event, true);
-
-                if (point) {
-                    point.highlight(e);
-                }
-            }
-        }
-    );
-});*/
 $('#container').bind('mousemove touchmove touchstart', function (e) {
     var chart,
         point,
@@ -69,19 +34,7 @@ Highcharts.Pointer.prototype.reset = function () {
     return undefined;
 };
 
-/**
- * Highlight a point by showing tooltip, setting hover state and draw crosshair
- */
-/*Highcharts.Point.prototype.highlight = function (event) {
-    event = this.series.chart.pointer.normalize(event);
-    this.onMouseOver(); // Show the hover marker
-    this.series.chart.tooltip.refresh(this); // Show the tooltip
-    this.series.chart.xAxis[0].drawCrosshair(event, this); // Show the crosshair
-};*/
 
-/**
- * Synchronize zooming through the setExtremes event handler.
- */
 function syncExtremes(e) {
     var thisChart = this.chart;
 
@@ -487,32 +440,6 @@ Highcharts.ajax({
             series: []
         };
 
-        /*var pieDiv = document.createElement('div');
-        pieDiv.className = 'chart';
-        document.getElementById('pie_legend').appendChild(pieDiv);
-
-        var pie_chart = Highcharts.chart(pieDiv, {
-            chart: {
-                type: 'pie'
-            },
-            title: {
-                text: undefined
-            },
-            credits: {
-                enabled: false
-            },
-            exporting: {
-                enabled: false
-            },
-            colors: ['#0d233a', '#8bbc21', '#910000', '#1aadce',
-            '#492970', '#f28f43', '#77a1e5', '#c42525', '#a6c96a'],
-            legend: {
-                enabled: false
-            },
-            series: [{
-                data: []
-            }]
-        });*/
 
         power = JSON.parse(power);
         var exports = [];
@@ -671,42 +598,6 @@ Highcharts.ajax({
             fillOpacity: 0
         });
 
-        /*$('#container').mouseover(function(){
-            var pie_data = [];
-            var legend_table = document.getElementById('legend');
-            
-            var total_row = legend_table.rows.item(1).cells;
-            for (var t = 0; t < total_row.length; t++){
-                if (t == 1) {
-                    var curr_total = '<b>Total: ' + parseFloat(total_row.item(t).innerHTML) + ' MW</b>';
-                    $("#total_div").html(curr_total);
-                }
-            }
-
-            for (i = 2; i < legend_table.rows.length; i++) {
-                var row_cells = legend_table.rows.item(i).cells;
-                var sect = {
-                    name: '',
-                    y: 0
-                };
-
-                for (var j = 0; j < row_cells.length; j++){
-                    var content = row_cells.item(j).innerHTML;
-                
-                    if (j == 0) {
-                        sect['name'] = content;
-                    }
-                    else if (j == 1) {
-                        sect['y'] = parseFloat(content);
-                    }
-                    else {
-                        break;
-                    }
-                }
-                pie_data.push(sect);
-            }
-            pie_chart.series[0].setData(pie_data);
-        });*/
 
         Highcharts.chart(energyDiv, area_options);
         Highcharts.chart(priceDiv, price_options);

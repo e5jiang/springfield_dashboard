@@ -1,0 +1,45 @@
+table {
+    font-family: Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    }
+
+    td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    }
+
+    tr:nth-child(even) {
+    background-color: #dddddd;
+    }
+
+#container {
+    width: 65%; 
+    float:left; 
+    padding-right: 5%; overflow: hidden;
+}
+
+#pie_legend {
+    width: 30%; 
+    float:left;
+}
+
+#date_time {
+    float:right; 
+    font-family: Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif;
+}
+
+#centered {
+    text-align: center;
+}
+
+#total_div {
+    padding-top: 10%; display: inline-block; 
+    font-family: Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif;
+}
+
+#title {
+    width: 100%;
+    font-family: Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif;
+}

@@ -1,36 +1,21 @@
 <html>
-<style>
-    table {
-    font-family: Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-    }
-
-    td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;,
-    }
-
-    tr:nth-child(even) {
-    background-color: #dddddd;
-    }
-</style>
 
     <body>
         
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <script src="assets/highcharts.js"></script>
         <script src="assets/data.js"></script>
-        <script src="https://code.highcharts.com/modules/exporting.js"></script>
-        <script src="http://highcharts.base.is/highcharts-downsample.js"></script>
-       
+        <link rel="stylesheet" type="text/css" href="css/main.css"/>
+
+    
+         <div id='title'>
+                <h1>Energy Springfield</h1>
+        </div>
         <div style="width: 100%"> 
-            <div id='container' style="width: 65%; float:left; padding-right: 5%; overflow: hidden" ></div>
-            
-            <div id='pie_legend' style="width: 30%; float:left">
-                <div id='date_time' style='float:right; 
-                    font-family: Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'></div> 
+            <div id='container'>
+            </div>
+            <div id='pie_legend'>
+                <div id='date_time'></div> 
                 <table id="legend">
                     <tr>
                     
@@ -41,9 +26,8 @@
                     
                     </tr>
                 </table>
-                <div style= 'text-align: center'>
-                    <div id='total_div' style='padding-top: 10%; display: inline-block; 
-                        font-family: Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'></div> 
+                <div id='centered'>
+                    <div id='total_div'></div> 
                 </div>   
             </div>
         </div>
