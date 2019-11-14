@@ -108,11 +108,49 @@ Highcharts.ajax({
     dataType: 'text',
     success: function (power) {
 
+        var pieDiv = document.createElement('div');
+        pieDiv.className = 'chart';
+        document.getElementById('pie_legend').appendChild(pieDiv);
+
+        var pie_chart = Highcharts.chart(pieDiv, {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: undefined
+            },
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            tooltip: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    enableMouseTracking: false,
+                    states: {
+                        hover: {
+                            enabled: false
+                        }
+                    }
+                }
+            },
+            colors: ['#0d233a', '#8bbc21', '#910000', '#1aadce',
+            '#492970', '#f28f43', '#77a1e5', '#c42525', '#a6c96a'],
+            legend: {
+                enabled: false
+            },
+            series: [{
+                data: []
+            }]
+        });
+
         var energyDiv = document.createElement('div');
         energyDiv.className = 'chart';
         document.getElementById('container').appendChild(energyDiv);
-
-        var pie_vals = [];
 
         var area_options = {
             chart: {
@@ -133,6 +171,8 @@ Highcharts.ajax({
             legend: {
                 enabled: false
             },
+            colors: ['#FFFFFF','#FFFFFF', '#0d233a', '#8bbc21', '#910000', '#1aadce',
+            '#f28f43', '#492970', '#77a1e5', '#c42525', '#a6c96a'],
             xAxis: {
                 type: 'datetime',
                 labels: {
@@ -167,16 +207,85 @@ Highcharts.ajax({
                 
                 formatter: function () {
                     var s = '';
-                
+                    var pie_data = [];
+                    var total = 0;
+                    var loads_header = '';   
+                    var loads_s = '';
+                    var legend_header = '';
+                    var legend_s = ''; 
+                    var net_s = '';
+                    var legend_colors = ['#FFFFFF','#FFFFFF', '#0d233a', '#8bbc21', '#910000', '#1aadce',
+                    '#f28f43', '#492970', '#77a1e5'];
                     $.each(this.points, function(i, point) {
-                        header = '<tr>' + '<th>Source</th>' + '<th>Power</th>' + '</tr>'; 
-                        s += '<tr>' + '<td>'+ point.series.name + '</td>' +
-                                '<td>' + this.y.toFixed(2) + '</td>' + '</tr>';
+                
+                        var time = '<p>' + Highcharts.dateFormat('%e %b, %I:%M %p', this.x) + '</p>';
+                        $("#date_time").html(time);
+
+                        
+                        if (point.series.name == 'Exports' || point.series.name == 'Pumps' || point.series.name == 'Net') {
+
+                            if (point.series.name == 'Net') {
+                                var percent = (parseFloat(this.y.toFixed(2))/total*100).toFixed(2) + '%';
+                                net_s += '<tr>' + '<td></td>' +
+                                '<td>'+ point.series.name + '</td>' +
+                                '<td>' + this.y.toFixed(2) + '</td>' +
+                                '<td>' + '</td>' + '</tr>';
+                            }
+                            else {
+                                var percent = (parseFloat(this.y.toFixed(2))/total*100).toFixed(2) + '%';
+                                loads_header = '<tr>' + '<th></th>' + '<th>Loads</th>' + '<th>Energy (MW)</th>' + 
+                                '<th>Contribution (to demand)</th>' + '</tr>';
+                                loads_s += '<tr>' +
+                                '<td style="background-color: ' + legend_colors[i] +'"></td>' + 
+                                '<td>'+ point.series.name + '</td>' +
+                                '<td>' + this.y.toFixed(2) + '</td>' +
+                                '<td>' + percent + '</td>' + '</tr>';
+                            }
+                        }
+                        else {
+                            
+                            if (point.series.name == 'Total') {
+                                total = parseFloat(this.y.toFixed(2));
+                                var curr_total = '<b>Total: ' + total + ' MW</b>';
+                                $("#total_div").html(curr_total);
+                            }
+                            else {
+                                pie_data.push({
+                                    name: point.series.name,
+                                    y: parseFloat(this.y.toFixed(2))
+                                });
+                            }
+
+                            if (point.series.name == 'distillate'){
+                                var percent = (parseFloat(this.y.toFixed(2))/total*100).toFixed(4) + '%';
+                            }
+                            else if (point.series.name == 'Total'){
+                                var percent = '';
+                            }
+                            else {
+                                var percent = (parseFloat(this.y.toFixed(2))/total*100).toFixed(1) + '%';
+                            }
+
+                            legend_header = '<tr>' + '<th></th>' + '<th>Sources</th>' + '<th>Energy (MW)</th>' + 
+                                            '<th>Contribution (to demand)</th>' + '</tr>';
+
+                            legend_s += '<tr>' + 
+                                    '<td style="background-color: ' + legend_colors[i] +'"></td>' + 
+                                    '<td>'+ point.series.name + '</td>' +
+                                    '<td>' + this.y.toFixed(2) + '</td>' +
+                                    '<td>' + percent + '</td>' + '</tr>';
+
+                            pie_chart.series[0].setData(pie_data);
+                        };
                     });
+                        
+                    $("#legend").html(legend_header + legend_s);
+                    $("#loads").html(loads_header + loads_s + net_s);
                     
-                    $("#legend").html(header + s);
                     return Highcharts.dateFormat('%e %b, %I:%M %p', this.x) + ' | ' + 
-                    this.y.toFixed(2);
+                    (this.y.toFixed(2) + ' MW').bold();
+
+                        
                 },
 
                 borderWidth: 0,
@@ -191,6 +300,13 @@ Highcharts.ajax({
 
             plotOptions: {
                 series: {
+                    marker: {
+                        states: {
+                            hover: {
+                                enabled: false
+                            }
+                        }
+                    },
                     pointStart: 1571578200000,
                     pointInterval: 30 * 60 * 1000,
                 }
@@ -256,7 +372,7 @@ Highcharts.ajax({
 
                 formatter: function () {
                     return Highcharts.dateFormat('%e %b, %I:%M %p', this.x) + ' | ' + 
-                    Highcharts.numberFormat(this.y, 0);
+                    ('$' + Highcharts.numberFormat(this.y, 0) + '.00').bold();
                 },
 
                 borderWidth: 0,
@@ -270,6 +386,13 @@ Highcharts.ajax({
 
             plotOptions: {
                 series: {
+                    marker: {
+                        states: {
+                            hover: {
+                                enabled: false
+                            }
+                        }
+                    },
                     pointStart: 1571578200000,
                     pointInterval: 30 * 60 * 1000
                 }
@@ -290,7 +413,7 @@ Highcharts.ajax({
                 type: 'line'
             },
             title: {
-                text: "Temperature F",
+                text: 'Temperature ' + String.fromCharCode(176) + 'F',
                 align: 'left',
                 margin: 0,
                 x: 30
@@ -335,7 +458,7 @@ Highcharts.ajax({
 
                 formatter: function () {
                     return Highcharts.dateFormat('%e %b, %I:%M %p', this.x) + ' | ' + 
-                    Highcharts.numberFormat(this.y, 0) + '<br/>';
+                    (Highcharts.numberFormat(this.y, 0) + String.fromCharCode(176) + 'F').bold();
                 },
 
                 borderWidth: 0,
@@ -349,6 +472,13 @@ Highcharts.ajax({
 
             plotOptions: {
                 series: {
+                    marker: {
+                        states: {
+                            hover: {
+                                enabled: false
+                            }
+                        }
+                    },
                     pointStart: 1571578200000,
                     pointInterval: 30 * 60 * 1000
                 }
@@ -357,7 +487,7 @@ Highcharts.ajax({
             series: []
         };
 
-        var pieDiv = document.createElement('div');
+        /*var pieDiv = document.createElement('div');
         pieDiv.className = 'chart';
         document.getElementById('pie_legend').appendChild(pieDiv);
 
@@ -371,39 +501,121 @@ Highcharts.ajax({
             credits: {
                 enabled: false
             },
+            exporting: {
+                enabled: false
+            },
+            colors: ['#0d233a', '#8bbc21', '#910000', '#1aadce',
+            '#492970', '#f28f43', '#77a1e5', '#c42525', '#a6c96a'],
             legend: {
                 enabled: false
             },
             series: [{
                 data: []
             }]
-        });
+        });*/
 
         power = JSON.parse(power);
+        var exports = [];
+        var pumps = [];
         power.forEach(function (dataset) {
-            if (dataset.type == 'power' && dataset.fuel_tech !== 'exports') {
+            if (dataset.type == 'power') {
                 var index = 336;
                 var original = dataset.history.data;
                 var area_arr = [];
                 var delta = Math.floor(original.length/index);
-                var total_arr = [];
                 for (i = 0; i < original.length; i=i+delta) {
                     area_arr.push(original[i]);
 
                 }
-                area_options.series.push({
-                    name: dataset.fuel_tech,
-                    data: area_arr,
-                    stacking: 'normal',
-                    states: {
-                        inactive: {
-                            opacity: 1
+                if (dataset.fuel_tech == 'exports') {
+                    var negated_arr = area_arr.map(value => -value);
+                    area_options.series.push({
+                        name: 'Exports',
+                        data: negated_arr,
+                        stacking: false,
+                        states: {
+                            inactive: {
+                                opacity: 1
+                            }
                         }
-                    }
-                });
-            
+                    });
+                }
+                else if (dataset.fuel_tech == 'pumps') {
+                    var negated_arr = area_arr.map(value => -value);
+                    area_options.series.push({
+                        name: 'Pumps',
+                        data: negated_arr,
+                        stacking: false,
+                        states: {
+                            inactive: {
+                                opacity: 1
+                            }
+                        }
+                    });
+                }
+                else if (dataset.fuel_tech == 'black_coal') {
+                    area_options.series.push({
+                        name: 'Black Coal',
+                        data: area_arr,
+                        stacking: 'normal',
+                        states: {
+                            inactive: {
+                                opacity: 1
+                            }
+                        }
+                    });
+                }
+                else if (dataset.fuel_tech == 'distillate') {
+                    area_options.series.push({
+                        name: 'Distillate',
+                        data: area_arr,
+                        stacking: 'normal',
+                        states: {
+                            inactive: {
+                                opacity: 1
+                            }
+                        }
+                    });
+                }
+                else if (dataset.fuel_tech == 'gas_ccgt') {
+                    area_options.series.push({
+                        name: 'Gas (CCGT)',
+                        data: area_arr,
+                        stacking: 'normal',
+                        states: {
+                            inactive: {
+                                opacity: 1
+                            }
+                        }
+                    });
+                }
+                else if (dataset.fuel_tech == 'hydro') {
+                    area_options.series.push({
+                        name: 'Hydro',
+                        data: area_arr,
+                        stacking: 'normal',
+                        states: {
+                            inactive: {
+                                opacity: 1
+                            }
+                        }
+                    });
+                }
+                else {
+                    area_options.series.push({
+                        name: 'Wind',
+                        data: area_arr,
+                        stacking: 'normal',
+                        states: {
+                            inactive: {
+                                opacity: 1
+                            }
+                        }
+                    });
+                }
             };
-            
+
+
             if (dataset.type == 'price') {
                 price_options.series.push({
                     name: 'Price',
@@ -418,17 +630,36 @@ Highcharts.ajax({
                 });
             };
         });
-
         var total_arr = [];
+        var net_arr = [];
         for (i = 0; i < area_options.series[0].data.length; i++) {
             var total = 0;
+            var net = 0;
             for (j = 0; j < area_options.series.length; j++) {
+                net += area_options.series[j].data[i];
                 total += area_options.series[j].data[i];
+                if (area_options.series[j].name == 'Exports' || area_options.series[j].name == 'Pumps') {
+                    net += area_options.series[j].data[i];
+                }
             }
             total_arr.push(total);
+            net_arr.push(net);
         }
         area_options.series.unshift({
-            name: 'total',
+            name: 'Net',
+            data: net_arr,
+            stacking: false,
+            states: {
+                hover: {
+                    enabled: false
+                }
+            },
+            opacity: 0,
+            fillOpacity: 0
+        });
+
+        area_options.series.unshift({
+            name: 'Total',
             data: total_arr,
             stacking: false,
             states: {
@@ -436,12 +667,21 @@ Highcharts.ajax({
                     enabled: false
                 }
             },
+            opacity: 0,
             fillOpacity: 0
         });
 
-        $('#container').mouseover(function(){
+        /*$('#container').mouseover(function(){
             var pie_data = [];
             var legend_table = document.getElementById('legend');
+            
+            var total_row = legend_table.rows.item(1).cells;
+            for (var t = 0; t < total_row.length; t++){
+                if (t == 1) {
+                    var curr_total = '<b>Total: ' + parseFloat(total_row.item(t).innerHTML) + ' MW</b>';
+                    $("#total_div").html(curr_total);
+                }
+            }
 
             for (i = 2; i < legend_table.rows.length; i++) {
                 var row_cells = legend_table.rows.item(i).cells;
@@ -466,7 +706,7 @@ Highcharts.ajax({
                 pie_data.push(sect);
             }
             pie_chart.series[0].setData(pie_data);
-        });
+        });*/
 
         Highcharts.chart(energyDiv, area_options);
         Highcharts.chart(priceDiv, price_options);

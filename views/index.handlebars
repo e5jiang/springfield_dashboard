@@ -1,7 +1,7 @@
 <html>
 <style>
     table {
-    font-family: arial, sans-serif;
+    font-family: Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
     }
@@ -9,7 +9,7 @@
     td, th {
     border: 1px solid #dddddd;
     text-align: left;
-    padding: 8px;
+    padding: 8px;,
     }
 
     tr:nth-child(even) {
@@ -25,16 +25,26 @@
         <script src="https://code.highcharts.com/modules/exporting.js"></script>
         <script src="http://highcharts.base.is/highcharts-downsample.js"></script>
        
-        <div style="width: 100%; overflow: hidden;"> 
-            <div id='container' style="width: 65%; float:left; padding-right: 5%"></div>
+        <div style="width: 100%"> 
+            <div id='container' style="width: 65%; float:left; padding-right: 5%; overflow: hidden" ></div>
             
             <div id='pie_legend' style="width: 30%; float:left">
+                <div id='date_time' style='float:right; 
+                    font-family: Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'></div> 
                 <table id="legend">
                     <tr>
-                        <th>Sources</th>
-                        <th>Power</th>
+                    
                     </tr>
-                </table>    
+                </table>
+                 <table id="loads">
+                    <tr>
+                    
+                    </tr>
+                </table>
+                <div style= 'text-align: center'>
+                    <div id='total_div' style='padding-top: 10%; display: inline-block; 
+                        font-family: Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'></div> 
+                </div>   
             </div>
         </div>
         <script src="js/main.js"></script>
